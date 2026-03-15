@@ -1,0 +1,301 @@
+<?xml version="1.0" ?>
+<!-- Generated using onshape-to-robot -->
+<!-- Onshape https://cad.onshape.com/documents/83f89d6fa1926c06de94a1ba/w/f48483f0232ca0364245b9ef/e/23190ec9e54ecdeeb2cfd9c2 -->
+<robot name="my_robot">
+  <!-- Link smalldrive -->
+  <link name="smalldrive">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="1e-09"/>
+      <inertia ixx="1e-09" ixy="0" ixz="0" iyy="1e-09" iyz="0" izz="1e-09"/>
+    </inertial>
+    <!-- Part smalldrive -->
+    <visual>
+      <origin xyz="0 0 0.0395" rpy="-1.5708 -0 0"/>
+      <geometry>
+        <mesh filename="assets/smalldrive.stl"/>
+      </geometry>
+      <material name="smalldrive_material">
+        <color rgba="0.498039 0.498039 0.498039 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.0395" rpy="-1.5708 -0 0"/>
+      <geometry>
+        <mesh filename="assets/smalldrive.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Link joint1 -->
+  <link name="joint1">
+    <inertial>
+      <origin xyz="-0.00848581 -0 -0.0122782" rpy="0 0 0"/>
+      <mass value="0.0172968"/>
+      <inertia ixx="6.45831e-06" ixy="0" ixz="-1.24856e-06" iyy="5.6004e-06" iyz="0" izz="3.8029e-06"/>
+    </inertial>
+    <!-- Part bigdrive -->
+    <visual>
+      <origin xyz="0.00375 -0 -0.0275" rpy="-1.5708 -0 -1.5708"/>
+      <geometry>
+        <mesh filename="assets/bigdrive.stl"/>
+      </geometry>
+      <material name="bigdrive_material">
+        <color rgba="0.498039 0.498039 0.498039 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.00375 -0 -0.0275" rpy="-1.5708 -0 -1.5708"/>
+      <geometry>
+        <mesh filename="assets/bigdrive.stl"/>
+      </geometry>
+    </collision>
+    <!-- Part joint1 -->
+    <visual>
+      <origin xyz="-0 0 -0.005" rpy="3.14159 -0 0"/>
+      <geometry>
+        <mesh filename="assets/joint1.stl"/>
+      </geometry>
+      <material name="joint1_material">
+        <color rgba="0.615686 0.811765 0.929412 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0 0 -0.005" rpy="3.14159 -0 0"/>
+      <geometry>
+        <mesh filename="assets/joint1.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Link arm1 -->
+  <link name="arm1">
+    <inertial>
+      <origin xyz="0.0625 0 -0.00254403" rpy="0 0 0"/>
+      <mass value="0.0554972"/>
+      <inertia ixx="4.06983e-06" ixy="0" ixz="-0" iyy="9.44294e-05" iyz="0" izz="9.82715e-05"/>
+    </inertial>
+    <!-- Part arm1 -->
+    <visual>
+      <origin xyz="0.0625 0 -0.005" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="assets/arm1.stl"/>
+      </geometry>
+      <material name="arm1_material">
+        <color rgba="0.615686 0.811765 0.929412 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0625 0 -0.005" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="assets/arm1.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Link smalldrive_2 -->
+  <link name="smalldrive_2">
+    <inertial>
+      <origin xyz="0.00720458 -0.0240019 -0.0284349" rpy="0 0 0"/>
+      <mass value="0.0283008"/>
+      <inertia ixx="1.49972e-05" ixy="2.93088e-06" ixz="1.52591e-06" iyy="8.55186e-06" iyz="-2.56579e-06" izz="1.53402e-05"/>
+    </inertial>
+    <!-- Part smalldrive_2 -->
+    <visual>
+      <origin xyz="0.0105 -0.048 -0.03425" rpy="-1.5708 1.5708 0"/>
+      <geometry>
+        <mesh filename="assets/smalldrive.stl"/>
+      </geometry>
+      <material name="smalldrive_2_material">
+        <color rgba="0.498039 0.498039 0.498039 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.0105 -0.048 -0.03425" rpy="-1.5708 1.5708 0"/>
+      <geometry>
+        <mesh filename="assets/smalldrive.stl"/>
+      </geometry>
+    </collision>
+    <!-- Part smalldrive_3 -->
+    <visual>
+      <origin xyz="0 -0 -0.026" rpy="-1.5708 -0 0"/>
+      <geometry>
+        <mesh filename="assets/smalldrive.stl"/>
+      </geometry>
+      <material name="smalldrive_3_material">
+        <color rgba="0.498039 0.498039 0.498039 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 -0 -0.026" rpy="-1.5708 -0 0"/>
+      <geometry>
+        <mesh filename="assets/smalldrive.stl"/>
+      </geometry>
+    </collision>
+    <!-- Part joint2 -->
+    <visual>
+      <origin xyz="-0 0 -0.021" rpy="-0 0 3.14159"/>
+      <geometry>
+        <mesh filename="assets/joint2.stl"/>
+      </geometry>
+      <material name="joint2_material">
+        <color rgba="0.615686 0.811765 0.929412 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0 0 -0.021" rpy="-0 0 3.14159"/>
+      <geometry>
+        <mesh filename="assets/joint2.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Link joint1_2 -->
+  <link name="joint1_2">
+    <inertial>
+      <origin xyz="0 0.00848581 0.0122782" rpy="0 0 0"/>
+      <mass value="0.0172968"/>
+      <inertia ixx="5.6004e-06" ixy="0" ixz="0" iyy="6.45831e-06" iyz="-1.24856e-06" izz="3.8029e-06"/>
+    </inertial>
+    <!-- Part joint1_2 -->
+    <visual>
+      <origin xyz="0 0 0.005" rpy="0 0 -1.5708"/>
+      <geometry>
+        <mesh filename="assets/joint1.stl"/>
+      </geometry>
+      <material name="joint1_2_material">
+        <color rgba="0.615686 0.811765 0.929412 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.005" rpy="0 0 -1.5708"/>
+      <geometry>
+        <mesh filename="assets/joint1.stl"/>
+      </geometry>
+    </collision>
+    <!-- Part smalldrive_4 -->
+    <visual>
+      <origin xyz="-0 0.00825 0.0275" rpy="-0 -0 -3.14159"/>
+      <geometry>
+        <mesh filename="assets/smalldrive.stl"/>
+      </geometry>
+      <material name="smalldrive_4_material">
+        <color rgba="0.498039 0.498039 0.498039 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0 0.00825 0.0275" rpy="-0 -0 -3.14159"/>
+      <geometry>
+        <mesh filename="assets/smalldrive.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Link arm2 -->
+  <link name="arm2">
+    <inertial>
+      <origin xyz="-0.0615505 0 0.00348904" rpy="0 0 0"/>
+      <mass value="0.0695265"/>
+      <inertia ixx="1.59281e-05" ixy="0" ixz="1.31117e-05" iyy="8.35088e-05" iyz="0" izz="8.0076e-05"/>
+    </inertial>
+    <!-- Part arm2 -->
+    <visual>
+      <origin xyz="-0.05 0 0" rpy="3.14159 -0 0"/>
+      <geometry>
+        <mesh filename="assets/arm2.stl"/>
+      </geometry>
+      <material name="arm2_material">
+        <color rgba="0.615686 0.811765 0.929412 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.05 0 0" rpy="3.14159 -0 0"/>
+      <geometry>
+        <mesh filename="assets/arm2.stl"/>
+      </geometry>
+    </collision>
+    <!-- Part smalldrive_5 -->
+    <visual>
+      <origin xyz="-0.09 -0 0.03425" rpy="-1.5708 -1.5708 0"/>
+      <geometry>
+        <mesh filename="assets/smalldrive.stl"/>
+      </geometry>
+      <material name="smalldrive_5_material">
+        <color rgba="0.498039 0.498039 0.498039 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="-0.09 -0 0.03425" rpy="-1.5708 -1.5708 0"/>
+      <geometry>
+        <mesh filename="assets/smalldrive.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Link ball_tool -->
+  <link name="ball_tool">
+    <inertial>
+      <origin xyz="0.00571124 -0 -0.0139557" rpy="0 0 0"/>
+      <mass value="0.0237583"/>
+      <inertia ixx="3.86791e-06" ixy="0" ixz="1.16726e-06" iyy="4.44985e-06" iyz="-0" izz="2.28716e-06"/>
+    </inertial>
+    <!-- Part ball_tool -->
+    <visual>
+      <origin xyz="0.01 -0 0" rpy="3.14159 -0 0"/>
+      <geometry>
+        <mesh filename="assets/ball_tool.stl"/>
+      </geometry>
+      <material name="ball_tool_material">
+        <color rgba="0.615686 0.811765 0.929412 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.01 -0 0" rpy="3.14159 -0 0"/>
+      <geometry>
+        <mesh filename="assets/ball_tool.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <!-- Joint from arm2 to ball_tool -->
+  <joint name="swivel" type="revolute">
+    <origin xyz="-0.116 -0 0.03425" rpy="-1.5708 -0 -1.5708"/>
+    <parent link="arm2"/>
+    <child link="ball_tool"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10" velocity="10" lower="-3.141592653589793" upper="3.141592653589793"/>
+  </joint>
+  <!-- Joint from joint1_2 to arm2 -->
+  <joint name="wrist" type="revolute">
+    <origin xyz="-0 0.03425 0.0275" rpy="1.5708 1.5708 0"/>
+    <parent link="joint1_2"/>
+    <child link="arm2"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10" velocity="10" lower="-3.141592653589793" upper="3.141592653589793"/>
+  </joint>
+  <!-- Joint from smalldrive_2 to joint1_2 -->
+  <joint name="rotation" type="revolute">
+    <origin xyz="0.0365 -0.048 -0.03425" rpy="1.5708 -0 1.5708"/>
+    <parent link="smalldrive_2"/>
+    <child link="joint1_2"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10" velocity="10" lower="-3.141592653589793" upper="3.141592653589793"/>
+  </joint>
+  <!-- Joint from arm1 to smalldrive_2 -->
+  <joint name="elbow" type="revolute">
+    <origin xyz="0.125 0 0" rpy="-3.14159 -0 -1.5708"/>
+    <parent link="arm1"/>
+    <child link="smalldrive_2"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10" velocity="10" lower="-3.141592653589793" upper="3.141592653589793"/>
+  </joint>
+  <!-- Joint from joint1 to arm1 -->
+  <joint name="shoulder" type="revolute">
+    <origin xyz="-0.03425 0 -0.0275" rpy="0 1.5708 0"/>
+    <parent link="joint1"/>
+    <child link="arm1"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10" velocity="10" lower="-3.141592653589793" upper="3.141592653589793"/>
+  </joint>
+  <!-- Joint from smalldrive to joint1 -->
+  <joint name="base" type="revolute">
+    <origin xyz="-0 0 0.0655" rpy="3.14159 -0 -1.5708"/>
+    <parent link="smalldrive"/>
+    <child link="joint1"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10" velocity="10" lower="-3.141592653589793" upper="3.141592653589793"/>
+  </joint>
+</robot>

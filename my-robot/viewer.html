@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #2b2b2b;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+
+    <script>
+        window.robotModel = null;
+        window.baseRotations = {}; // <-- NEW: Dictionary to store the original Blender angles
+
+        window.setJointAngle = function (jointName, angleDeg, axis) {
+            if (!window.robotModel) return;
+            const node = window.robotModel.getObjectByName(jointName);
+
+            if (node) {
+                // 1. If this is the first time we are touching this joint, save its exact starting angle
+                if (window.baseRotations[jointName] === undefined) {
+                    window.baseRotations[jointName] = node.rotation[axis];
+                }
+
+                // 2. Add the slider's angle to the ORIGINAL base angle
+                node.rotation[axis] = window.baseRotations[jointName] + (angleDeg * (Math.PI / 180.0));
+            }
+        };
+    </script>
+</head>
+
+<body>
+    <script>
+        const scene = new THREE.Scene();
+        const gridHelper = new THREE.GridHelper(2, 20, 0x555555, 0x444444);
+        gridHelper.position.y = -0.01;
+        scene.add(gridHelper);
+
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 100);
+        camera.position.set(0.5, 0.5, 0.5);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+
+        // 1. Ambient Light: This is like the "room brightness." 
+        // If your robot is too dark in the shadows, increase the 0.7
+        const ambient = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambient);
+
+        // 2. Directional Light: This is like a "studio lamp" or the sun.
+        // It creates the shiny highlights on your metallic parts.
+        const sun = new THREE.DirectionalLight(0xffffff, 0.25);
+        sun.position.set(5, 10, 7); // Position it high and to the side
+        scene.add(sun);
+
+        // 3. Optional: Add a second light from the other side 
+        // This helps see the "back" of the robot
+        const fillLight = new THREE.PointLight(0xffffff, 0.25);
+        fillLight.position.set(-5, 5, -5);
+        scene.add(fillLight);
+
+        const loader = new THREE.GLTFLoader();
+
+        // WE JUST LOAD THE LOCAL GLB FILE DIRECTLY NOW!
+        loader.load('robot.glb', function (gltf) {
+            window.robotModel = gltf.scene;
+            scene.add(window.robotModel);
+
+            const box = new THREE.Box3().setFromObject(window.robotModel);
+            const center = box.getCenter(new THREE.Vector3());
+            controls.target.copy(center);
+            camera.position.set(center.x + 0.5, center.y + 0.3, center.z + 0.5);
+            controls.update();
+        });
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
+</body>
+
+</html>

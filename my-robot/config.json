@@ -1,0 +1,8 @@
+{
+    "url": "https://cad.onshape.com/documents/83f89d6fa1926c06de94a1ba/w/f48483f0232ca0364245b9ef/e/23190ec9e54ecdeeb2cfd9c2",
+    "output_format": "urdf",
+    "robotName": "my_robot",
+    "fixed_link": "smalldrive",
+    "meshes_path": "assets",
+    "no_package_xml": true
+}
