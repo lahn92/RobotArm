@@ -1,3 +1,4 @@
+--- starts QT designer
 .\.venv\Scripts\pyside6-designer.exe 
 
 --- when exporting URDF do searh and replace on file before blender import
