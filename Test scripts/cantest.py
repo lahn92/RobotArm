@@ -3,7 +3,8 @@ import time
 import sys
 
 # --- CONFIGURATION ---
-COM_PORT = 'COM4'      
+#COM_PORT = 'COM4'   
+COM_PORT = '/dev/ttyACM0'  
 BITRATE = 500000       
 MOTOR_ID = 0x01        
 
@@ -49,7 +50,7 @@ def run_and_monitor_speed():
     # ==========================================
     # 2. Spin Up to 3000 RPM
     # ==========================================
-    target_speed = 250
+    target_speed = 500
     direction = 1       # 0 = Forward, 1 = Reverse
     acc = 240           # FAST acceleration (Max is 255)
 

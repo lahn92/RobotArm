@@ -1,0 +1,7 @@
+python-can
+numpy<2.0.0
+roboticstoolbox-python
+spatialmath-python
+PyQt6
+PyQt6-WebEngine
+pyserial

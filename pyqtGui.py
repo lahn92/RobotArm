@@ -17,7 +17,8 @@ from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWebEngineCore import QWebEngineSettings
 
 # --- CONFIGURATION ---
-COM_PORT = 'COM4'
+#COM_PORT = 'COM4'   
+COM_PORT = '/dev/ttyACM0' 
 BITRATE = 500000
 JOG_STEP = 1.0
 JOG_INTERVAL = 50
@@ -127,6 +128,12 @@ class RobotArmWindow(QMainWindow):
 
     def init_ui(self):
         central_widget = QWidget()
+        
+        # --- LINUX DARK THEME FIX 1: The Main Background ---
+        central_widget.setObjectName("CentralWidget")
+        central_widget.setStyleSheet("QWidget#CentralWidget { background-color: #121212; }")
+        # ---------------------------------------------------
+        
         self.setCentralWidget(central_widget)
         self.layout_main = QHBoxLayout(central_widget)
 
