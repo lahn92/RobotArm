@@ -367,9 +367,15 @@ class RobotArmWindow(QMainWindow):
         ui["slider"].blockSignals(False)
         ui["input"].blockSignals(False)
         
+        # Look for this block inside update_joint():
         if j_id in self.hardware_joints:
             cmd = -angle if config.JOINT_CONFIGS[j_id]["invert"] else angle
-            self.hardware_joints[j_id].move_to_angle(cmd)
+            
+            # --- NEW DYNAMIC SPEED LOGIC ---
+            # If the user is currently holding a jog button, use 85 RPM. Otherwise, 1500.
+            current_speed = 85 if self.active_jog else 1500
+            self.hardware_joints[j_id].move_to_angle(cmd, speed=current_speed)
+            # -------------------------------
         
         vis_cfg = config.JOINT_CONFIGS[j_id]
         axis = vis_cfg.get("axis", "z")

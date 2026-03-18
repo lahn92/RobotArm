@@ -18,14 +18,12 @@ class SerialRobotController:
             print(f"Failed to connect to Teensy: {e}")
             return False
 
-    def send_joint_angle(self, motor_id, angle_deg, enabled=True):
+    def send_joint_angle(self, motor_id, angle_deg, enabled=True, speed=1500):
         if not self.conn or not enabled:
             return
-        
-        # Format: J,<motor_id>,<angle>
-        # Example: J,1,45.5\n
-        cmd = f"J,{motor_id},{angle_deg:.2f}\n"
+        cmd = f"J,{motor_id},{angle_deg:.2f},{int(speed)}\n"
         self.conn.write(cmd.encode('utf-8'))
+
 
     def set_gpio(self, pin, state):
         """Easily expandable for future grippers/LEDs"""
@@ -60,8 +58,8 @@ class MKSJoint:
         self.controller.conn.write(cmd_zero.encode('utf-8'))
         time.sleep(0.05)
 
-    def move_to_angle(self, angle_deg):
-        self.controller.send_joint_angle(self.motor_id, angle_deg, self.can_enabled)
+    def move_to_angle(self, angle_deg, speed=1500):
+        self.controller.send_joint_angle(self.motor_id, angle_deg, self.can_enabled, speed)
 
     def disable(self):
         if not self.can_enabled or not self.controller.conn:

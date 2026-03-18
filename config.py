@@ -1,7 +1,7 @@
 from pathlib import Path
 
 # --- HARDWARE CONFIGURATION ---
-COM_PORT = '/dev/ttyACM0'  # Change to 'COM4' if you move back to Windows
+COM_PORT = 'COM7' #'/dev/ttyACM0'  # Change to 'COM4' if you move back to Windows
 BITRATE = 500000
 
 # --- JOGGING CONFIGURATION ---
