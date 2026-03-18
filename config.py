@@ -1,7 +1,7 @@
 from pathlib import Path
 
 # --- HARDWARE CONFIGURATION ---
-COM_PORT = 'COM7' #'/dev/ttyACM0'  # Change to 'COM4' if you move back to Windows
+COM_PORT = 'COM7' # Change to '/dev/ttyACM0' if on Linux/Raspberry Pi
 BITRATE = 500000
 
 # --- JOGGING CONFIGURATION ---
@@ -23,3 +23,7 @@ JOINT_CONFIGS = [
     {"id": 4, "can_id": 0x05, "name": "Joint 4 (Wrist)", "urdf_link": "wrist", "invert": False, "can_enabled": False, "axis": "y", "vis_invert": True},
     {"id": 5, "can_id": 0x06, "name": "Joint 5 (Swivel)", "urdf_link": "swivel", "invert": False, "can_enabled": False, "axis": "x", "vis_invert": True},
 ]
+
+# --- GPIO CONFIGURATION ---
+GPIO_OUTPUT_PINS = [2, 3, 4, 5, 7, 8, 9, 10, 11, 12]
+GPIO_INPUT_PINS = [14, 15, 16, 17, 18, 19, 20, 21, 24, 25]

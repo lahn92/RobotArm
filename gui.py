@@ -6,7 +6,6 @@ from PyQt6.QtGui import QDoubleValidator, QColor
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWebEngineCore import QWebEngineSettings
 
-# Import from our other files
 import config
 from hardware import MKSJoint
 from kinematics import RobotKinematics
@@ -43,6 +42,11 @@ class RobotArmWindow(QMainWindow):
         self.jog_timer.timeout.connect(self.process_jog)
         self.active_jog = None 
 
+        # Polling timer for live Teensy Inputs (Runs 20 times a second)
+        self.poll_timer = QTimer()
+        self.poll_timer.timeout.connect(self.poll_serial)
+        self.poll_timer.start(50)
+
         for cfg in config.JOINT_CONFIGS:
             joint = MKSJoint(self.bus, motor_id=cfg["can_id"], can_enabled=cfg["can_enabled"])
             if self.bus and cfg["can_enabled"]:
@@ -76,7 +80,7 @@ class RobotArmWindow(QMainWindow):
         """)
         self.layout_main.addWidget(self.tabs, stretch=2)
 
-        # Tab 1: Main Controls
+        # --- TAB 1: MAIN CONTROLS ---
         self.tab_main = QWidget()
         self.tab_main.setObjectName("TabMain")
         self.tab_main.setStyleSheet("QWidget#TabMain { background-color: #1e1e1e; }")
@@ -108,7 +112,76 @@ class RobotArmWindow(QMainWindow):
         self.layout_main_tab.addStretch()
         self.tabs.addTab(self.tab_main, "Main Controls")
 
-        # Tab 2: Settings
+        # --- TAB 2: GPIO / TOOLS ---
+        self.tab_gpio = QWidget()
+        self.tab_gpio.setObjectName("TabGPIO")
+        self.tab_gpio.setStyleSheet("QWidget#TabGPIO { background-color: #1e1e1e; }")
+        
+        self.layout_gpio_tab = QHBoxLayout(self.tab_gpio)
+        self.layout_gpio_tab.setContentsMargins(20, 20, 20, 20)
+        self.layout_gpio_tab.setSpacing(40) 
+        
+        # LEFT SIDE: OUTPUTS
+        self.layout_outputs = QVBoxLayout()
+        self.layout_outputs.setAlignment(Qt.AlignmentFlag.AlignTop)
+        
+        lbl_outputs = QLabel("<b>OUTPUTS:</b>")
+        lbl_outputs.setStyleSheet("color: #e2b714; font-size: 14px; border: none; padding-bottom: 10px;")
+        self.layout_outputs.addWidget(lbl_outputs)
+        
+        self.gpio_out_grid = QGridLayout()
+        self.gpio_out_grid.setVerticalSpacing(10)
+        self.gpio_out_grid.setHorizontalSpacing(15)
+        
+        for idx, pin in enumerate(config.GPIO_OUTPUT_PINS):
+            btn = QPushButton(f"Pin {pin}: OFF")
+            btn.setCheckable(True)
+            btn.setFixedSize(140, 45) 
+            btn.setStyleSheet("QPushButton { background-color: #444; color: white; border-radius: 4px; font-weight: bold; font-size: 13px; }")
+            btn.toggled.connect(lambda checked, p=pin, b=btn: self.on_gpio_toggled(p, checked, b))
+            
+            row = idx // 2
+            col = idx % 2
+            self.gpio_out_grid.addWidget(btn, row, col)
+            
+        self.layout_outputs.addLayout(self.gpio_out_grid)
+        self.layout_outputs.addStretch()
+        
+        # RIGHT SIDE: INPUTS
+        self.layout_inputs = QVBoxLayout()
+        self.layout_inputs.setAlignment(Qt.AlignmentFlag.AlignTop)
+        
+        lbl_inputs = QLabel("<b>INPUTS:</b>")
+        lbl_inputs.setStyleSheet("color: #5da9f6; font-size: 14px; border: none; padding-bottom: 10px;")
+        self.layout_inputs.addWidget(lbl_inputs)
+        
+        self.gpio_in_grid = QGridLayout()
+        self.gpio_in_grid.setVerticalSpacing(10)
+        self.gpio_in_grid.setHorizontalSpacing(15)
+        self.input_indicators = {}
+        
+        for idx, pin in enumerate(config.GPIO_INPUT_PINS):
+            indicator = QLabel(f"Pin {pin}: HIGH")
+            indicator.setFixedSize(140, 45) 
+            indicator.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            indicator.setStyleSheet("QLabel { background-color: #5da9f6; color: white; border-radius: 4px; font-weight: bold; font-size: 13px; }")
+            
+            self.input_indicators[pin] = indicator
+            row = idx // 2
+            col = idx % 2
+            
+            self.gpio_in_grid.addWidget(indicator, row, col)
+            
+        self.layout_inputs.addLayout(self.gpio_in_grid)
+        self.layout_inputs.addStretch() 
+        
+        self.layout_gpio_tab.addLayout(self.layout_outputs)
+        self.layout_gpio_tab.addLayout(self.layout_inputs)
+        self.layout_gpio_tab.addStretch()
+        
+        self.tabs.addTab(self.tab_gpio, "GPIO / Tools")
+
+        # --- TAB 3: SETTINGS ---
         self.tab_settings = QWidget()
         self.tab_settings.setObjectName("TabSettings")
         self.tab_settings.setStyleSheet("QWidget#TabSettings { background-color: #1e1e1e; }")
@@ -125,6 +198,25 @@ class RobotArmWindow(QMainWindow):
         self.tabs.addTab(self.tab_settings, "Settings")
 
         self.update_kinematics()
+
+    def poll_serial(self):
+        if hasattr(self, 'bus') and self.bus:
+            msgs = self.bus.read_messages()
+            for msg in msgs:
+                if msg.startswith("I,"):
+                    parts = msg.split(',')
+                    if len(parts) == 3:
+                        pin = int(parts[1])
+                        state = int(parts[2])
+                        
+                        if pin in self.input_indicators:
+                            ind = self.input_indicators[pin]
+                            if state == 1:
+                                ind.setText(f"Pin {pin}: HIGH")
+                                ind.setStyleSheet("QLabel { background-color: #5da9f6; color: white; border-radius: 4px; font-weight: bold; font-size: 13px; }")
+                            else:
+                                ind.setText(f"Pin {pin}: LOW")
+                                ind.setStyleSheet("QLabel { background-color: #444; color: white; border-radius: 4px; font-weight: bold; font-size: 13px; }")
 
     def create_pose_display(self):
         frame = QFrame()
@@ -367,15 +459,10 @@ class RobotArmWindow(QMainWindow):
         ui["slider"].blockSignals(False)
         ui["input"].blockSignals(False)
         
-        # Look for this block inside update_joint():
         if j_id in self.hardware_joints:
             cmd = -angle if config.JOINT_CONFIGS[j_id]["invert"] else angle
-            
-            # --- NEW DYNAMIC SPEED LOGIC ---
-            # If the user is currently holding a jog button, use 85 RPM. Otherwise, 1500.
             current_speed = 85 if self.active_jog else 1500
             self.hardware_joints[j_id].move_to_angle(cmd, speed=current_speed)
-            # -------------------------------
         
         vis_cfg = config.JOINT_CONFIGS[j_id]
         axis = vis_cfg.get("axis", "z")
@@ -388,7 +475,6 @@ class RobotArmWindow(QMainWindow):
             self.update_kinematics()
 
     def update_kinematics(self):
-        # Call the math engine instead of doing math here
         pos, rpy = self.kinematics_engine.calculate_fk(
             self.joint_values, self.tcp_enabled, self.tcp_offset
         )
@@ -412,7 +498,6 @@ class RobotArmWindow(QMainWindow):
             ry = float(self.pose_inputs["Ry"].text())
             rz = float(self.pose_inputs["Rz"].text())
             
-            # Use the math engine to find the new angles
             success, new_angles = self.kinematics_engine.calculate_ik(
                 x, y, z, rx, ry, rz, self.joint_values, self.tcp_enabled, self.tcp_offset
             )
@@ -425,6 +510,17 @@ class RobotArmWindow(QMainWindow):
                 
         except ValueError:
             print("Invalid pose input")
+
+    def on_gpio_toggled(self, pin, checked, button):
+        if checked:
+            button.setText(f"Pin {pin}: ON")
+            button.setStyleSheet("QPushButton { background-color: #2e7d32; color: white; border-radius: 4px; font-weight: bold; font-size: 13px; }") 
+        else:
+            button.setText(f"Pin {pin}: OFF")
+            button.setStyleSheet("QPushButton { background-color: #444; color: white; border-radius: 4px; font-weight: bold; font-size: 13px; }") 
+            
+        if hasattr(self, 'bus') and self.bus:
+            self.bus.set_gpio(pin, 1 if checked else 0)
 
     def initiate_jog(self, j_id, delta):
         self.active_jog = (j_id, delta)
@@ -463,7 +559,8 @@ class RobotArmWindow(QMainWindow):
 
     def home_all(self):
         for idx in self.joint_values:
-            if idx in self.hardware_joints: self.hardware_joints[idx]._send([0x92])
+            if idx in self.hardware_joints: 
+                self.hardware_joints[idx].zero_motor()
             self.update_joint(idx, 0.0)
         self.update_kinematics()
 
