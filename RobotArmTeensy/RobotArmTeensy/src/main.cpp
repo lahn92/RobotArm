@@ -22,6 +22,7 @@ void parseCommand(String cmd);
 void sendMKS_Absolute(int id, float joint_angle_deg, int speed_rpm);
 void sendMKS_Enable(int id, int state);
 void sendMKS_Zero(int id);
+void sendMKS_Speed(int id, int speed_rpm, uint8_t acc);
 
 // --- CAN RECEIVE CALLBACK (Buffer Drain) ---
 void canSniff(const CAN_message_t &msg)
@@ -110,6 +111,12 @@ void parseCommand(String cmd)
         int speed = thirdComma > 0 ? cmd.substring(thirdComma + 1).toInt() : 1500;
         sendMKS_Absolute(id_or_pin, angle, speed);
       }
+      else if (type == 'V')
+      {
+        int speed = cmd.substring(secondComma + 1, thirdComma > 0 ? thirdComma : cmd.length()).toInt();
+        int acc = thirdComma > 0 ? cmd.substring(thirdComma + 1).toInt() : 240;
+        sendMKS_Speed(id_or_pin, speed, acc);
+      }
       else if (type == 'G')
       {
         digitalWrite(id_or_pin, (int)cmd.substring(secondComma + 1).toFloat());
@@ -174,6 +181,33 @@ void sendMKS_Absolute(int id, float joint_angle_deg, int speed_rpm)
   for (int i = 0; i < 7; i++)
     sum += msg.buf[i];
   msg.buf[7] = sum & 0xFF;
+
+  Can0.write(msg);
+}
+
+void sendMKS_Speed(int id, int speed_rpm, uint8_t acc)
+{
+  CAN_message_t msg;
+  msg.id = id;
+  msg.flags.extended = 0;
+  msg.len = 5;
+
+  // Determine direction (0 for forward, 1 for reverse) and absolute speed
+  int dir = (speed_rpm < 0) ? 1 : 0;
+  int abs_speed = abs(speed_rpm);
+
+  msg.buf[0] = 0xF6;
+  msg.buf[1] = (dir << 7) | ((abs_speed >> 8) & 0x0F);
+  msg.buf[2] = abs_speed & 0xFF;
+  msg.buf[3] = acc;
+
+  // Calculate Checksum: (ID + Data[0] + Data[1] + Data[2] + Data[3]) & 0xFF
+  uint32_t sum = id;
+  for (int i = 0; i < 4; i++)
+  {
+    sum += msg.buf[i];
+  }
+  msg.buf[4] = sum & 0xFF;
 
   Can0.write(msg);
 }
